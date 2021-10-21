@@ -162,6 +162,39 @@ ThreadJoin:
 	j 	$31
 	.end ThreadJoin
 
+/*mp1 add system calls: Open, Close, Read, Write*/
+	.globl Open
+	.ent   Open
+Open:
+	addiu $2, $0, Open
+	syscall
+	j 	$31
+	.end Open
+
+	.globl Close
+	.ent   Close
+Close:
+	addiu $2, $0, Close
+	syscall
+	j 	$31
+	.end Close
+
+	.globl Read
+	.ent   Read
+Read:
+	addiu $2, $0, Read
+	syscall
+	j 	$31
+	.end Read
+
+	.globl Write
+	.ent   Write
+Write:
+	addiu $2, $0, Write
+	syscall
+	j 	$31
+	.end Write
+
 
 /* dummy function to keep gcc happy */
         .globl  __main
