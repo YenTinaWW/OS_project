@@ -188,6 +188,12 @@ fileIO_test1.o: fileIO_test1.c
 fileIO_test1: fileIO_test1.o start.o
 	$(LD) $(LDFLAGS) start.o fileIO_test1.o -o fileIO_test1.coff
 	$(COFF2NOFF) fileIO_test1.coff fileIO_test1
+
+fileIO_test1_1.o: fileIO_test1_1.c
+	$(CC) $(CFLAGS) -c fileIO_test1_1.c
+fileIO_test1_1: fileIO_test1_1.o start.o
+	$(LD) $(LDFLAGS) start.o fileIO_test1_1.o -o fileIO_test1_1.coff
+	$(COFF2NOFF) fileIO_test1_1.coff fileIO_test1_1
 	
 fileIO_test2.o: fileIO_test2.c
 	$(CC) $(CFLAGS) -c fileIO_test2.c
@@ -195,6 +201,17 @@ fileIO_test2: fileIO_test2.o start.o
 	$(LD) $(LDFLAGS) start.o fileIO_test2.o -o fileIO_test2.coff
 	$(COFF2NOFF) fileIO_test2.coff fileIO_test2
 
+fileIO_test2_1.o: fileIO_test2_1.c
+	$(CC) $(CFLAGS) -c fileIO_test2_1.c
+fileIO_test2_1: fileIO_test2_1.o start.o
+	$(LD) $(LDFLAGS) start.o fileIO_test2_1.o -o fileIO_test2_1.coff
+	$(COFF2NOFF) fileIO_test2_1.coff fileIO_test2_1
+
+fileIO_test3.o: fileIO_test3.c
+	$(CC) $(CFLAGS) -c fileIO_test3.c
+fileIO_test3: fileIO_test3.o start.o
+	$(LD) $(LDFLAGS) start.o fileIO_test3.o -o fileIO_test3.coff
+	$(COFF2NOFF) fileIO_test3.coff fileIO_test3
 
 createFile.o: createFile.c
 	$(CC) $(CFLAGS) -c createFile.c

@@ -143,11 +143,11 @@ ExceptionHandler(ExceptionType which)
 		// mp1 open
 		case SC_Open:
 			val = kernel->machine->ReadRegister(4);
-			DEBUG(dbgSys, "val:" << val << ".\n");
+			DEBUG(dbgSys, "val:" << val);
 			filename = &(kernel->machine->mainMemory[val]);
-			DEBUG(dbgSys, "Open file:" << filename << "\n");
+			DEBUG(dbgSys, "Open file:" << filename);
 			fileID = SysOpen(filename);
-			DEBUG(dbgSys, "file ID:" << fileID << ".\n");
+			DEBUG(dbgSys, "file ID:" << fileID);
 			kernel->machine->WriteRegister(2, (int) fileID);
 			
 			// Set Program Counter
@@ -195,8 +195,8 @@ ExceptionHandler(ExceptionType which)
 		// mp1 close
 		case SC_Close:
 			fileID = (int)kernel->machine->ReadRegister(4);
-			DEBUG(dbgSys, "Close file.\n");
-			DEBUG(dbgSys, "fileID: " << fileID << "\n");
+			DEBUG(dbgSys, "Close file");
+			DEBUG(dbgSys, "fileID: " << fileID);
 			status = SysClose(fileID);
 			kernel->machine->WriteRegister(2, (int)status);
 			// Set Program Counter

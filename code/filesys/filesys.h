@@ -67,11 +67,18 @@ class FileSystem {
 //  The OpenAFile function is used for kernel open system call
   OpenFileId OpenAFile(char *name) {
       // open a file
-      DEBUG(dbgSys, "open file. filename: " << name << ".\n");
       OpenFile* file = Open(name);
       if (file == NULL) return -1; // There is no such a file
-      DEBUG(dbgSys, "open file. file: " << file << ".\n");
+      DEBUG(dbgSys, "file: " << file);
 
+      //check if open the opened file
+      // for(OpenFileId i = 0; i < 20; i++){
+      //   if( OpenFileTable[i]!=NULL && (*OpenFileTable[i]) == *file) {
+      //     DEBUG(dbgSys, "reopen");
+      //     return i;
+      //   }
+      // }
+      
       // find if there is an empty space for the new open file
       // if yes, set file; if no, return -1
       for(OpenFileId i = 0; i <= 20; i++){
@@ -99,8 +106,8 @@ class FileSystem {
   int CloseFile(OpenFileId id){
       if(id >= 0 && id <20)
     {
-      DEBUG(dbgSys, "closed file id: " << id << ".\n");
-      DEBUG(dbgSys, "OpenFileTable[id]: " << OpenFileTable[id] << ".\n");
+      DEBUG(dbgSys, "closed file id: " << id);
+      DEBUG(dbgSys, "OpenFileTable[id]: " << OpenFileTable[id]);
       delete OpenFileTable[id];
       OpenFileTable[id] = NULL;
       return 1;
