@@ -163,7 +163,6 @@ ExceptionHandler(ExceptionType which)
 			val = kernel->machine->ReadRegister(4);
 			buffer = &(kernel->machine->mainMemory[val]);
 			size = (int)kernel->machine->ReadRegister(5);
-			val = kernel->machine->ReadRegister(6);
 			fileID = (int)kernel->machine->ReadRegister(6);
 			DEBUG(dbgSys, "Read file\n" << "Buffer: " << buffer << " Size: " << size << " id: " << fileID << ".\n");
 			numChar = SysRead(buffer, size, fileID);
@@ -197,7 +196,7 @@ ExceptionHandler(ExceptionType which)
 		case SC_Close:
 			fileID = (int)kernel->machine->ReadRegister(4);
 			DEBUG(dbgSys, "Close file.\n");
-			DEBUG(dbgSys, "fileID: "<<fileID<<"\n");
+			DEBUG(dbgSys, "fileID: " << fileID << "\n");
 			status = SysClose(fileID);
 			kernel->machine->WriteRegister(2, (int)status);
 			// Set Program Counter

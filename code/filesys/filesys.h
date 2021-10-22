@@ -57,7 +57,7 @@ class FileSystem {
 	return TRUE; 
     }
 //The OpenFile function is used for open user program  [userprog/addrspace.cc]
-    OpenFile* Open(char *name) {
+  OpenFile* Open(char *name) {
 	int fileDescriptor = OpenForReadWrite(name, FALSE);
 	if (fileDescriptor == -1) return NULL;
 	return new OpenFile(fileDescriptor);
@@ -67,16 +67,17 @@ class FileSystem {
 //  The OpenAFile function is used for kernel open system call
   OpenFileId OpenAFile(char *name) {
       // open a file
-      int fileDescriptor = OpenForReadWrite(name, FALSE);
-      if (fileDescriptor == -1) return -1; // There is no such a file
-      DEBUG(dbgSys, "FileDescriptor:" << fileDescriptor << ".\n");
+      DEBUG(dbgSys, "open file. filename: " << name << ".\n");
+      OpenFile* file = Open(name);
+      if (file == NULL) return -1; // There is no such a file
+      DEBUG(dbgSys, "open file. file: " << file << ".\n");
 
       // find if there is an empty space for the new open file
       // if yes, set file; if no, return -1
       for(OpenFileId i = 0; i <= 20; i++){
         if(i == 20) return -1;
         if(OpenFileTable[i] == NULL){
-          OpenFileTable[i] = new OpenFile(fileDescriptor);
+          OpenFileTable[i] = file;
           return i;
         }        
       }
