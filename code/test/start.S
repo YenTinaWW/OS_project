@@ -162,11 +162,11 @@ ThreadJoin:
 	j 	$31
 	.end ThreadJoin
 
-/*mp1 add system calls: Open, Close, Read, Write*/
+
 	.globl Open
-	.ent   Open
+	.ent    Open
 Open:
-	addiu $2, $0, Open
+	addiu $2,$0,SC_Open
 	syscall
 	j 	$31
 	.end Open
@@ -174,7 +174,7 @@ Open:
 	.globl Close
 	.ent   Close
 Close:
-	addiu $2, $0, Close
+	addiu $2,$0,SC_Close
 	syscall
 	j 	$31
 	.end Close
@@ -182,7 +182,7 @@ Close:
 	.globl Read
 	.ent   Read
 Read:
-	addiu $2, $0, Read
+	addiu $2,$0,SC_Read
 	syscall
 	j 	$31
 	.end Read
@@ -190,7 +190,7 @@ Read:
 	.globl Write
 	.ent   Write
 Write:
-	addiu $2, $0, Write
+	addiu $2,$0,SC_Write
 	syscall
 	j 	$31
 	.end Write

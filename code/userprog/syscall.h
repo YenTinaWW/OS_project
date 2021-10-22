@@ -177,35 +177,6 @@ int ThreadJoin(ThreadId id);
  */
 void ThreadExit(int ExitCode);
 
-/* mp1 system calls: Open, Close, Read, Write */
-
-/*
- * Open a file with the name, and return its corresponding OpenFileId.
- * Return -1 if fail to open the file.
- */
-OpenFileId Open(char *name);
-
-/*
- * Write “size” characters from the buffer into the file,
- * and return the number of characters actually written to the file.
- * Return -1, if fail to write the file.
- */
-int Write(char *buffer, int size, OpenFileId id);
-
-/* 
- * Read “size” characters from the file to the buffer,
- * and return the number of characters actually read from the file.
- * Return -1, if fail to read the file.
- */
-int Read(char *buffer, int size, OpenFileId id);
-
-/*
- * Close the file with id.
- * Return 1 if successfully close the file. Otherwise, return -1.
- * Need to delete the OpenFile after you close the file
- * (Can’t only set the table content to NULL)
- */
-int Close(OpenFileId id);
 
 #endif /* IN_ASM */
 

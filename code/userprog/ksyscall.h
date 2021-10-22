@@ -50,7 +50,7 @@ OpenFileId SysOpen(char *name)
 
 int SysRead(char* buffer, int size, OpenFileId id)
 {
-  return kernel->fileSystem->>ReadFile(buffer, size, id);
+  return kernel->fileSystem->ReadFile(buffer, size, id);
 }
 
 int SysWrite(char* buffer, int size, OpenFileId id)

@@ -66,31 +66,48 @@ class FileSystem {
   
 //  The OpenAFile function is used for kernel open system call
   OpenFileId OpenAFile(char *name) {
-      OpenFileId id;
       // open a file
-      int file = OpenForReadWrite(name, FALSE);
-      if (file == -1) return -1;
+      int fileDescriptor = OpenForReadWrite(name, FALSE);
+      if (fileDescriptor == -1) return -1; // There is no such a file
+      DEBUG(dbgSys, "FileDescriptor:" << fileDescriptor << ".\n");
 
-      // find is there is an empty space for the new open file
+      // find if there is an empty space for the new open file
       // if yes, set file; if no, return -1
-      for(i = 0; i <= 20; i++){
+      for(OpenFileId i = 0; i <= 20; i++){
         if(i == 20) return -1;
         if(OpenFileTable[i] == NULL){
-          OpenFileTable[i] = file;
-          id = i;
-          break;
+          OpenFileTable[i] = new OpenFile(fileDescriptor);
+          return i;
         }        
       }
-      return id;
     }
   int WriteFile(char *buffer, int size, OpenFileId id){
+    if(id >= 20) return -1; // invalid index in OpenFildTable
+    if(OpenFileTable[id] == NULL) return -1; // file doesn't exist
 
+    int numWrite = (*OpenFileTable[id]).Write(buffer, size);
+    return numWrite;
   }
   int ReadFile(char *buffer, int size, OpenFileId id){
-    
+    if(id >= 20) return -1; // invalid index in OpenFildTable
+    if(OpenFileTable[id] == NULL) return -1; // file doesn't exist
+
+    int numRead = (*OpenFileTable[id]).Read(buffer, size);
+    return numRead;
   }
   int CloseFile(OpenFileId id){
-      
+      if(id >= 0 && id <20)
+    {
+      DEBUG(dbgSys, "closed file id: " << id << ".\n");
+      DEBUG(dbgSys, "OpenFileTable[id]: " << OpenFileTable[id] << ".\n");
+      delete OpenFileTable[id];
+      OpenFileTable[id] = NULL;
+      return 1;
+    }
+    else
+    {
+      return -1;
+    }
   }
 
 
