@@ -143,8 +143,9 @@ ExceptionHandler(ExceptionType which)
 		
 		// mp1 open
 		case SC_Open:
-			name = kernel->machine->ReadRegister(4);
-			DEBUG(dbgSys, "Open file.\n");
+			val = kernel->machine->ReadRegister(4);
+			char *filename = &(kernel->machine->mainMemory[val]);
+			DEBUG(dbgSys, "Open file:" << filename << ".\n");
 			id = SysOpen(name);
 			// Set Program Counter
 			kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
