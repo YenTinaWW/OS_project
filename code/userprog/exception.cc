@@ -146,55 +146,66 @@ ExceptionHandler(ExceptionType which)
 			val = kernel->machine->ReadRegister(4);
 			char *filename = &(kernel->machine->mainMemory[val]);
 			DEBUG(dbgSys, "Open file:" << filename << ".\n");
-			id = SysOpen(name);
+			int id = SysOpen(filename);
+			kernel->machine->WriteRegister(2, (int) id);
 			// Set Program Counter
 			kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
 			kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
 			kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-			return id;
+			return;
 			ASSERTNOTREACHED();
 	    break;
 
 		// mp1 read
 		case SC_Read:
-			buffer = kernel->machine->ReadRegister(4);
-			size = kernel->machine->ReadRegister(5);
-			id = kernel->machine->ReadRegister(6);
-			DEBUG(dbgSys, "Read file.\n");
-			charNum = SysRead(buffer, size, id);
+			val = kernel->machine->ReadRegister(4);
+			char *buffer = &(kernel->machine->mainMemory[val]);
+			val = kernel->machine->ReadRegister(5);
+			int size = &(kernel->machine->mainMemory[val]);
+			val = kernel->machine->ReadRegister(6);
+			OpenFileId id = &(kernel->machine->mainMemory[val]);
+			DEBUG(dbgSys, "Read file\n" << "Buffer: " << buffer << " Size: " << size << " id: " << id << ".\n");
+			int charNum = SysRead(buffer, size, id);
+			kernel->machine->WriteRegister(2, (int) charNum);
 			// Set Program Counter
 			kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
 			kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
 			kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-			return charNum;
+			return;
 			ASSERTNOTREACHED();
 	    break;
 
 		// mp1 write
 		case SC_Write:
-			buffer = kernel->machine->ReadRegister(4);
-			size = kernel->machine->ReadRegister(5);
-			id = kernel->machine->ReadRegister(6);
-			DEBUG(dbgSys, "Write file.\n");
-			charNum = SysWrite(buffer, size, id);
+			val = kernel->machine->ReadRegister(4);
+			char *buffer = &(kernel->machine->mainMemory[val]);
+			val = kernel->machine->ReadRegister(5);
+			int size = &(kernel->machine->mainMemory[val]);
+			val = kernel->machine->ReadRegister(6);
+			OpenFileId id = &(kernel->machine->mainMemory[val]);
+			DEBUG(dbgSys, "Write file\n" << "Buffer: " << buffer << " Size: " << size << " id: " << id << ".\n");
+			int charNum = SysRead(buffser, size, id);
+			kernel->machine->WriteRegister(2, (int) charNum);
 			// Set Program Counter
 			kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
 			kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
 			kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-			return charNum;
+			return;
 			ASSERTNOTREACHED();
 	    break;
 
 		// mp1 close
 		case SC_Close:
-			id = kernel->machine->ReadRegister(4);
+			val = kernel->machine->ReadRegister(4);
+			OpenFileId id = &(kernel->machine->mainMemory[val]);
 			DEBUG(dbgSys, "Close file.\n");
-			state = SysClose(id);
+			int state = SysClose(id);
+			kernel->machine->WriteRegister(2, (int) state);
 			// Set Program Counter
 			kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
 			kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
 			kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-			return state;
+			return;
 			ASSERTNOTREACHED();
 	    break;
 	}
