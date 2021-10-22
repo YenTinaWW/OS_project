@@ -46,7 +46,7 @@ typedef int OpenFileId;
 class FileSystem {
   public:
     FileSystem() { 
-	for (int i = 0; i < 20; i++) OpenFileTable[i] = NULL; 
+	for (int i = 0; i < 20; i++) OpenFileTable[i] = NULL; //init file=NULL; currentOffset=0;
     }
 
     bool Create(char *name) {
@@ -65,15 +65,34 @@ class FileSystem {
 
   
 //  The OpenAFile function is used for kernel open system call
-/*  OpenFileId OpenAFile(char *name) {
+  OpenFileId OpenAFile(char *name) {
+      OpenFileId id;
+      // open a file
+      int file = OpenForReadWrite(name, FALSE);
+      if (file == -1) return -1;
+
+      // find is there is an empty space for the new open file
+      // if yes, set file; if no, return -1
+      for(i = 0; i <= 20; i++){
+        if(i == 20) return -1;
+        if(OpenFileTable[i] == NULL){
+          OpenFileTable[i] = file;
+          id = i;
+          break;
+        }        
+      }
+      return id;
     }
-    int WriteFile(char *buffer, int size, OpenFileId id){
-    }
-    int ReadFile(char *buffer, int size, OpenFileId id){
-    }
-    int CloseFile(OpenFileId id){
-    }
-*/
+  int WriteFile(char *buffer, int size, OpenFileId id){
+
+  }
+  int ReadFile(char *buffer, int size, OpenFileId id){
+    
+  }
+  int CloseFile(OpenFileId id){
+      
+  }
+
 
 
     bool Remove(char *name) { return Unlink(name) == 0; }
