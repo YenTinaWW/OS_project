@@ -2,6 +2,9 @@
     "C_Cpp.errorSquiggles": "Disabled",
     "files.associations": {
         "typeinfo": "cpp",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "*.tcc": "cpp",
+        "cstdio": "cpp",
+        "ostream": "cpp"
     }
 }

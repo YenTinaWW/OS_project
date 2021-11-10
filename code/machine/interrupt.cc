@@ -153,10 +153,10 @@ Interrupt::OneTick()
 // advance simulated time
     if (status == SystemMode) {
         stats->totalTicks += SystemTick;
-	stats->systemTicks += SystemTick;
+    	stats->systemTicks += SystemTick;
     } else {
-	stats->totalTicks += UserTick;
-	stats->userTicks += UserTick;
+	    stats->totalTicks += UserTick;
+	    stats->userTicks += UserTick;
     }
     DEBUG(dbgInt, "== Tick " << stats->totalTicks << " ==");
 
