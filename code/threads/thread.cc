@@ -170,12 +170,12 @@ Thread::Begin ()
 void
 Thread::Finish ()
 {
-    (void) kernel->interrupt->SetLevel(IntOff);		
+    (void) kernel->interrupt->SetLevel(IntOff);	
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Finishing thread: " << name);
-    Sleep(TRUE);				// invokes SWITCH
-    // not reached
+    Sleep(TRUE); // ^v^/ put thread to sleep and relinquish the processor
+    // invokes SWITCH not reached
 }
 
 

@@ -250,11 +250,11 @@ Kernel::NetworkTest() {
 
 void ForkExecute(Thread *t)
 {
-	if ( !t->space->Load(t->getName()) ) {
+	if ( !t->space->Load(t->getName()) ) { // ^v^/ load a program into addr space from a file
     	return;             // executable not found
     }
 	
-    t->space->Execute(t->getName());
+    t->space->Execute(t->getName()); // ^v^/ Execute() assume the program has already been load
 
 }
 
@@ -263,7 +263,7 @@ void Kernel::ExecAll()
 	for (int i=1;i<=execfileNum;i++) {
 		int a = Exec(execfile[i]);
 	}
-	currentThread->Finish();
+	currentThread->Finish(); // ^v^/ sleep
     //Kernel::Exec();	
 }
 
@@ -271,8 +271,8 @@ void Kernel::ExecAll()
 int Kernel::Exec(char* name)
 {
 	t[threadNum] = new Thread(name, threadNum);
-	t[threadNum]->space = new AddrSpace();
-	t[threadNum]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[threadNum]);
+	t[threadNum]->space = new AddrSpace(); // ^v^/ user code this thread is running
+	t[threadNum]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[threadNum]); // ^v^/ run ForkExecure(t[threadNum])
 	threadNum++;
 
 	return threadNum-1;

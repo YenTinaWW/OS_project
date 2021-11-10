@@ -106,7 +106,7 @@ bool
 AddrSpace::Load(char *fileName) 
 {
     OpenFile *executable = kernel->fileSystem->Open(fileName);
-    NoffHeader noffH;
+    NoffHeader noffH; // ^v^/ for reading data from disk to memory
     unsigned int size;
 
     if (executable == NULL) {
@@ -115,12 +115,12 @@ AddrSpace::Load(char *fileName)
     }
 
     executable->ReadAt((char *)&noffH, sizeof(noffH), 0);
-    if ((noffH.noffMagic != NOFFMAGIC) && 
-		(WordToHost(noffH.noffMagic) == NOFFMAGIC))
-    	SwapHeader(&noffH);
+    if ((noffH.noffMagic != NOFFMAGIC) && // ^v^/ (maybe) the file is not Nachos object code file
+		(WordToHost(noffH.noffMagic) == NOFFMAGIC)) // ^v^/ (maybe) convert to big endian is Nachos object code file
+    	SwapHeader(&noffH); // ^v^/ little endian -> big endian
     ASSERT(noffH.noffMagic == NOFFMAGIC);
 
-#ifdef RDATA
+#ifdef RDATA // read only data
 // how big is address space?
     size = noffH.code.size + noffH.readonlyData.size + noffH.initData.size +
            noffH.uninitData.size + UserStackSize;	
@@ -133,7 +133,7 @@ AddrSpace::Load(char *fileName)
 						// to leave room for the stack
 #endif
     numPages = divRoundUp(size, PageSize);
-    size = numPages * PageSize;
+    size = numPages * PageSize; // ^v^/ let table size multiple of page size
 
     ASSERT(numPages <= NumPhysPages);		// check we're not trying
 						// to run anything too big --
@@ -149,14 +149,14 @@ AddrSpace::Load(char *fileName)
 	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
         executable->ReadAt(
 		&(kernel->machine->mainMemory[noffH.code.virtualAddr]), 
-			noffH.code.size, noffH.code.inFileAddr);
+			noffH.code.size, noffH.code.inFileAddr); // ^v^/ code
     }
     if (noffH.initData.size > 0) {
         DEBUG(dbgAddr, "Initializing data segment.");
 	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
         executable->ReadAt(
 		&(kernel->machine->mainMemory[noffH.initData.virtualAddr]),
-			noffH.initData.size, noffH.initData.inFileAddr);
+			noffH.initData.size, noffH.initData.inFileAddr); // ^v^/ init data
     }
 
 #ifdef RDATA
@@ -165,7 +165,7 @@ AddrSpace::Load(char *fileName)
 	DEBUG(dbgAddr, noffH.readonlyData.virtualAddr << ", " << noffH.readonlyData.size);
         executable->ReadAt(
 		&(kernel->machine->mainMemory[noffH.readonlyData.virtualAddr]),
-			noffH.readonlyData.size, noffH.readonlyData.inFileAddr);
+			noffH.readonlyData.size, noffH.readonlyData.inFileAddr); // ^v^/ read only data
     }
 #endif
 
