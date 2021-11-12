@@ -46,7 +46,7 @@ Kernel::Kernel(int argc, char **argv)
         } else if (strcmp(argv[i], "-s") == 0) {
             debugUserProg = TRUE;
 		} else if (strcmp(argv[i], "-e") == 0) {
-        	execfile[++execfileNum]= argv[++i];
+        	execfile[++execfileNum]= argv[++i]; // ^v^/ executed file add at here
 			cout << execfile[execfileNum] << "\n";
 		} else if (strcmp(argv[i], "-ci") == 0) {
 	    	ASSERT(i + 1 < argc);
@@ -115,6 +115,7 @@ Kernel::Initialize()
     postOfficeOut = new PostOfficeOutput(reliability);
 
     interrupt->Enable();
+    pageOffset = 0;
 }
 
 //----------------------------------------------------------------------
@@ -271,7 +272,7 @@ void Kernel::ExecAll()
 int Kernel::Exec(char* name)
 {
 	t[threadNum] = new Thread(name, threadNum);
-	t[threadNum]->space = new AddrSpace(); // ^v^/ user code this thread is running
+	t[threadNum]->space = new AddrSpace( pageOffset ); // ^v^/ user code this thread is running
 	t[threadNum]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[threadNum]); // ^v^/ run ForkExecure(t[threadNum])
 	threadNum++;
 

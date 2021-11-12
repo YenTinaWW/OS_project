@@ -354,11 +354,11 @@ Thread::StackAllocate (VoidFunctionPtr func, void *arg)
     machineState[InitialArgState] = arg;
     machineState[WhenDonePCState] = PLabelToAddr(ThreadFinish);
 #else
-    machineState[PCState] = (void*)ThreadRoot;
-    machineState[StartupPCState] = (void*)ThreadBegin;
+    machineState[PCState] = (void*)ThreadRoot; // ^v^/ First frame on thread execution stack
+    machineState[StartupPCState] = (void*)ThreadBegin; // ^v^/ kernel->currentThread->Begin();
     machineState[InitialPCState] = (void*)func;
     machineState[InitialArgState] = (void*)arg;
-    machineState[WhenDonePCState] = (void*)ThreadFinish;
+    machineState[WhenDonePCState] = (void*)ThreadFinish; // ^v^/ kernel->currentThread->Finish()
 #endif
 }
 

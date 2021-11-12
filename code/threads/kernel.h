@@ -72,21 +72,22 @@ class Kernel {
     int hostName;               // machine identifier
 
   private:
-
 	Thread* t[10];
 	char*   execfile[10];
 	int execfileNum;
 	int threadNum;
-    bool randomSlice;		// enable pseudo-random time slicing
-    bool debugUserProg;         // single step user program
-    double reliability;         // likelihood messages are dropped
-    char *consoleIn;            // file to read console input from
-    char *consoleOut;           // file to send console output to
+
+  int pageOffset;
+
+  bool randomSlice;		// enable pseudo-random time slicing
+  bool debugUserProg;         // single step user program
+  double reliability;         // likelihood messages are dropped
+  char *consoleIn;            // file to read console input from
+  char *consoleOut;           // file to send console output to
 #ifndef FILESYS_STUB
     bool formatFlag;          // format the disk if this is true
 #endif
 };
-
 
 #endif // KERNEL_H
 

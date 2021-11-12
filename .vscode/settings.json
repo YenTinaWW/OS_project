@@ -5,6 +5,10 @@
         "stdlib.h": "c",
         "*.tcc": "cpp",
         "cstdio": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "exception": "cpp",
+        "functional": "cpp",
+        "iosfwd": "cpp",
+        "istream": "cpp"
     }
 }

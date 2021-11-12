@@ -36,8 +36,7 @@ const int PageSize = 128; 		// set the page size equal to
 // available on the simulated machine.
 //
 const int NumPhysPages = 128;
-
-const int MemorySize = (NumPhysPages * PageSize);
+const int MemorySize = (NumPhysPages * PageSize); // 2^14
 const int TLBSize = 4;			// if there is a TLB, make it small
 
 enum ExceptionType { NoException,           // Everything ok!
@@ -154,7 +153,7 @@ class Machine {
     
 
 
-    ExceptionType Translate(int virtAddr, int* physAddr, int size,bool writing);
+    ExceptionType Translate(int virtAddr, int* physAddr, int size,bool writing); // ^v^?
     				// Translate an address, and check for 
 				// alignment.  Set the use and dirty bits in 
 				// the translation entry appropriately,

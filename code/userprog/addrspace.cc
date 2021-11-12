@@ -65,12 +65,18 @@ SwapHeader (NoffHeader *noffH)
 //	only uniprogramming, and we have a single unsegmented page table
 //----------------------------------------------------------------------
 
-AddrSpace::AddrSpace()
+AddrSpace::AddrSpace(int pageOffset)
 {
-    pageTable = new TranslationEntry[NumPhysPages];
+    // how to get page offset?
+    // 需要知道目前這個 thread 會用到的空間大小 -> 幾個 page?
+    // 需要知道 physical memory 目前的使用情形
+    // 找到適合的空間放這個 file
+
+    
+    pageTable = new TranslationEntry[NumPhysPages]; // ^v^/ TranslationEntry is use for mapping
     for (int i = 0; i < NumPhysPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virt page # = phys page #
-	pageTable[i].physicalPage = i;
+	pageTable[i].physicalPage = i + pageOffset; /* ^v^ TODO: add an offset */
 	pageTable[i].valid = TRUE;
 	pageTable[i].use = FALSE;
 	pageTable[i].dirty = FALSE;
@@ -139,11 +145,15 @@ AddrSpace::Load(char *fileName)
 						// to run anything too big --
 						// at least until we have
 						// virtual memory
+                        /* TODO translate the virtual address into physical address */
 
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
 
 // then, copy in the code and data segments into memory
 // Note: this code assumes that virtual address = physical address
+    /* TODO: int paddr -> mainMemory[paddr] */
+    // e = Translate(unsigned int vaddr, &paddr, int isReadWrite)
+    // check execption
     if (noffH.code.size > 0) {
         DEBUG(dbgAddr, "Initializing code segment.");
 	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
@@ -272,9 +282,9 @@ void AddrSpace::RestoreState()
 ExceptionType
 AddrSpace::Translate(unsigned int vaddr, unsigned int *paddr, int isReadWrite)
 {
-    TranslationEntry *pte;
-    int               pfn;
-    unsigned int      vpn    = vaddr / PageSize;
+    TranslationEntry *pte; // ^v^/ page table entry
+    int               pfn; // ^v^/ physical frame number
+    unsigned int      vpn    = vaddr / PageSize; // ^v^/ virtual page number
     unsigned int      offset = vaddr % PageSize;
 
     if(vpn >= numPages) {
