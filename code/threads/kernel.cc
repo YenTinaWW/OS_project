@@ -272,7 +272,7 @@ void Kernel::ExecAll()
 int Kernel::Exec(char* name)
 {
 	t[threadNum] = new Thread(name, threadNum);
-	t[threadNum]->space = new AddrSpace( pageOffset ); // ^v^/ user code this thread is running
+	t[threadNum]->space = new AddrSpace(); // ^v^/ user code this thread is running
 	t[threadNum]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[threadNum]); // ^v^/ run ForkExecure(t[threadNum])
 	threadNum++;
 

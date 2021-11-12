@@ -65,19 +65,18 @@ SwapHeader (NoffHeader *noffH)
 //	only uniprogramming, and we have a single unsegmented page table
 //----------------------------------------------------------------------
 
-AddrSpace::AddrSpace(int pageOffset)
+AddrSpace::AddrSpace()
 {
     // how to get page offset?
     // 需要知道目前這個 thread 會用到的空間大小 -> 幾個 page?
     // 需要知道 physical memory 目前的使用情形
     // 找到適合的空間放這個 file
-
     
     pageTable = new TranslationEntry[NumPhysPages]; // ^v^/ TranslationEntry is use for mapping
     for (int i = 0; i < NumPhysPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virt page # = phys page #
-	pageTable[i].physicalPage = i + pageOffset; /* ^v^ TODO: add an offset */
-	pageTable[i].valid = TRUE;
+	pageTable[i].physicalPage = i; // ^v^/ we will add offset later
+    pageTable[i].valid = FALSE;
 	pageTable[i].use = FALSE;
 	pageTable[i].dirty = FALSE;
 	pageTable[i].readOnly = FALSE;  
@@ -141,31 +140,49 @@ AddrSpace::Load(char *fileName)
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize; // ^v^/ let table size multiple of page size
 
-    ASSERT(numPages <= NumPhysPages);		// check we're not trying
+    if (numPages + kernel->pageOffset >= NumPhysPages){
+        ExceptionHandler(MemoryLimitException);
+    }		// check we're not trying
 						// to run anything too big --
 						// at least until we have
 						// virtual memory
-                        /* TODO translate the virtual address into physical address */
 
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
 
 // then, copy in the code and data segments into memory
 // Note: this code assumes that virtual address = physical address
-    /* TODO: int paddr -> mainMemory[paddr] */
-    // e = Translate(unsigned int vaddr, &paddr, int isReadWrite)
-    // check execption
+    // mp2 implentation
+    for (int i = 0; i < numPages; i++){
+        pageTable[i].physicalPage += kernel->pageOffset;
+        pageTable[i].valid = TRUE;
+    }
+
+    kernel->pageOffset += numPages;
+        
+    unsigned int paddr = 0;
+    ExceptionType e;
+
+
     if (noffH.code.size > 0) {
+        e = Translate( (unsigned int)noffH.code.virtualAddr, &paddr, 1 );
+        ASSERT(e == NoException);
+        DEBUG(dbgSys, "code virtualAddr: " << (unsigned int)noffH.code.virtualAddr);
         DEBUG(dbgAddr, "Initializing code segment.");
 	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
         executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.code.virtualAddr]), 
+		&(kernel->machine->mainMemory[paddr]), 
 			noffH.code.size, noffH.code.inFileAddr); // ^v^/ code
     }
+
     if (noffH.initData.size > 0) {
+        e = Translate( (unsigned int)noffH.initData.virtualAddr, &paddr, 1 );
+        DEBUG(dbgSys, "init data virtualAddr: " << (unsigned int)noffH.initData.virtualAddr);
+        DEBUG(dbgSys, "execption: " << e);
+        ASSERT(e == NoException);
         DEBUG(dbgAddr, "Initializing data segment.");
 	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
         executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.initData.virtualAddr]),
+		&(kernel->machine->mainMemory[paddr]),
 			noffH.initData.size, noffH.initData.inFileAddr); // ^v^/ init data
     }
 
@@ -174,7 +191,7 @@ AddrSpace::Load(char *fileName)
         DEBUG(dbgAddr, "Initializing read only data segment.");
 	DEBUG(dbgAddr, noffH.readonlyData.virtualAddr << ", " << noffH.readonlyData.size);
         executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.readonlyData.virtualAddr]),
+		&(kernel->machine->mainMemory[paddr]),
 			noffH.readonlyData.size, noffH.readonlyData.inFileAddr); // ^v^/ read only data
     }
 #endif
@@ -288,6 +305,7 @@ AddrSpace::Translate(unsigned int vaddr, unsigned int *paddr, int isReadWrite)
     unsigned int      offset = vaddr % PageSize;
 
     if(vpn >= numPages) {
+        DEBUG(dbgSys, vpn << ',' << numPages);
         return AddressErrorException;
     }
 

@@ -70,15 +70,13 @@ class Kernel {
     PostOfficeOutput *postOfficeOut;
 
     int hostName;               // machine identifier
+    int pageOffset;
 
   private:
 	Thread* t[10];
 	char*   execfile[10];
 	int execfileNum;
 	int threadNum;
-
-  int pageOffset;
-
   bool randomSlice;		// enable pseudo-random time slicing
   bool debugUserProg;         // single step user program
   double reliability;         // likelihood messages are dropped

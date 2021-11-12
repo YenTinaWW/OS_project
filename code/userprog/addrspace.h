@@ -20,7 +20,7 @@
 
 class AddrSpace {
   public:
-    AddrSpace(int pageOffset);			// Create an address space.
+    AddrSpace();			// Create an address space.
     ~AddrSpace();			// De-allocate an address space
 
     bool Load(char *fileName);		// Load a program into addr space from
