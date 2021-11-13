@@ -67,11 +67,6 @@ SwapHeader (NoffHeader *noffH)
 
 AddrSpace::AddrSpace()
 {
-    // how to get page offset?
-    // 需要知道目前這個 thread 會用到的空間大小 -> 幾個 page?
-    // 需要知道 physical memory 目前的使用情形
-    // 找到適合的空間放這個 file
-    
     pageTable = new TranslationEntry[NumPhysPages]; // ^v^/ TranslationEntry is use for mapping
     for (int i = 0; i < NumPhysPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virt page # = phys page #
@@ -93,6 +88,7 @@ AddrSpace::AddrSpace()
 
 AddrSpace::~AddrSpace()
 {
+   // kernel -> pageOffset = 0;
    delete pageTable;
 }
 
@@ -151,6 +147,7 @@ AddrSpace::Load(char *fileName)
 
 // then, copy in the code and data segments into memory
 // Note: this code assumes that virtual address = physical address
+
     // mp2 implentation
     for (int i = 0; i < numPages; i++){
         pageTable[i].physicalPage += kernel->pageOffset;
@@ -161,7 +158,6 @@ AddrSpace::Load(char *fileName)
         
     unsigned int paddr = 0;
     ExceptionType e;
-
 
     if (noffH.code.size > 0) {
         e = Translate( (unsigned int)noffH.code.virtualAddr, &paddr, 1 );
@@ -195,7 +191,7 @@ AddrSpace::Load(char *fileName)
 			noffH.readonlyData.size, noffH.readonlyData.inFileAddr); // ^v^/ read only data
     }
 #endif
-
+    
     delete executable;			// close file
     return TRUE;			// success
 }
